@@ -1,0 +1,26 @@
+name: Build macOS AU Plugin
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build Audio Unit (.component)
+        run: cmake --build build --config Release --target SimpleDeReverb_AU -j 4
+
+      - name: Upload .component Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SimpleDeReverb-AU-macOS
+          path: build/SimpleDeReverb_artefacts/Release/AU/SimpleDeReverb.component
